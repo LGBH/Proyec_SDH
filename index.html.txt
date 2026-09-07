@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal de Atención al Ciudadano</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --azul:#163A5C;
+    --azul-700:#0E2A45;
+    --azul-100:#E3ECF3;
+    --tramites:#1F5C4D;
+    --tramites-100:#E2EFEA;
+    --pqrs:#A6472B;
+    --pqrs-100:#F5E3DC;
+    --dorado:#C68A2E;
+    --dorado-100:#F5EAD3;
+    --dorado-oscuro:#8A5F1E;
+    --papel:#EEF2F5;
+    --superficie:#FFFFFF;
+    --ink:#1C2B36;
+    --ink-muted:#5B6A76;
+    --linea:#D7DEE4;
+    --ok:#1F5C4D;
+    --radius:14px;
+    --font-display:'Space Grotesk', sans-serif;
+    --font-body:'IBM Plex Sans', sans-serif;
+    --font-mono:'IBM Plex Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--papel);
+    color:var(--ink);
+    font-family:var(--font-body);
+    line-height:1.55;
+  }
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+  a{color:var(--azul);}
+  ::selection{background:var(--dorado); color:#fff;}
+
+  /* ---------- ENCABEZADO ---------- */
+  header.top{
+    background:var(--azul);
+    color:#fff;
+  }
+  .top-bar{
+    max-width:1080px;margin:0 auto;padding:10px 24px;
+    display:flex;align-items:center;justify-content:space-between;
+    font-size:13px;color:#C7D6E3;border-bottom:1px solid rgba(255,255,255,0.12);
+  }
+  .top-bar span{display:flex;align-items:center;gap:6px;}
+  .brand-row{
+    max-width:1080px;margin:0 auto;padding:20px 24px 26px;
+    display:flex;align-items:center;gap:16px;
+  }
+  .escudo{
+    width:52px;height:52px;flex-shrink:0;
+  }
+  .brand-text .kicker{
+    font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#9FC1DC;font-weight:600;
+  }
+  .brand-text h1{
+    font-family:var(--font-display);font-weight:600;font-size:22px;margin:2px 0 0;
+  }
+
+  /* ---------- HERO ---------- */
+  main{max-width:1080px;margin:0 auto;padding:0 24px 64px;}
+  .hero{padding:48px 0 36px;max-width:640px;}
+  .hero .eyebrow{
+    font-family:var(--font-mono);font-size:13px;color:var(--pqrs);
+    letter-spacing:.04em;margin:0 0 10px;
+  }
+  .hero h2{
+    font-family:var(--font-display);font-size:34px;line-height:1.15;font-weight:600;
+    margin:0 0 14px;color:var(--azul-700);
+  }
+  .hero p{font-size:16px;color:var(--ink-muted);margin:0;max-width:52ch;}
+
+  /* ---------- VENTANILLAS ---------- */
+  .ventanillas{
+    display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:40px;
+  }
+  @media (max-width:720px){ .ventanillas{grid-template-columns:1fr;} }
+
+  .ventanilla{
+    position:relative;
+    background:var(--superficie);
+    border:1px solid var(--linea);
+    border-radius:20px 20px var(--radius) var(--radius);
+    padding:28px 26px 24px;
+    cursor:pointer;
+    text-align:left;
+    font-family:var(--font-body);
+    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  }
+  .ventanilla:hover{transform:translateY(-3px); box-shadow:0 10px 24px rgba(22,58,92,.10);}
+  .ventanilla:focus-visible{outline:3px solid var(--dorado); outline-offset:3px;}
+  .ventanilla::before{
+    content:"";position:absolute;left:26px;right:26px;top:0;height:6px;
+    border-radius:6px 6px 0 0;
+    background:linear-gradient(90deg, currentColor, currentColor);
+  }
+  .ventanilla.pqrs{color:var(--pqrs);}
+  .ventanilla.tramites{color:var(--tramites);}
+  .ventanilla.radicar{color:var(--azul);}
+  .ventanilla.consultar{color:var(--dorado-oscuro);}
+  .ventanilla.is-active{border-color:currentColor; box-shadow:0 0 0 2px currentColor inset;}
+
+  .arco{
+    width:100%;height:96px;border-radius:56px 56px 8px 8px;
+    display:flex;align-items:center;justify-content:center;margin-bottom:18px;
+  }
+  .ventanilla.pqrs .arco{background:var(--pqrs-100);}
+  .ventanilla.tramites .arco{background:var(--tramites-100);}
+  .ventanilla.radicar .arco{background:var(--azul-100);}
+  .ventanilla.consultar .arco{background:var(--dorado-100);}
+  .arco svg{width:40px;height:40px;}
+
+  .ventanilla .tag{
+    display:inline-block;font-family:var(--font-mono);font-size:11px;font-weight:600;
+    letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:20px;
+    margin-bottom:10px;
+  }
+  .ventanilla.pqrs .tag{background:var(--pqrs-100);}
+  .ventanilla.tramites .tag{background:var(--tramites-100);}
+  .ventanilla.radicar .tag{background:var(--azul-100);}
+  .ventanilla.consultar .tag{background:var(--dorado-100);}
+
+  .ventanilla h3{
+    font-family:var(--font-display);font-size:21px;font-weight:600;margin:0 0 6px;color:var(--ink);
+  }
+  .ventanilla .sub{font-size:14px;color:var(--ink-muted);margin:0 0 14px;min-height:38px;}
+  .ventanilla .cta{
+    display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14px;color:currentColor;
+  }
+  .ventanilla .cta svg{width:16px;height:16px;transition:transform .15s ease;}
+  .ventanilla:hover .cta svg{transform:translateX(3px);}
+
+  /* ---------- FRANJA DE CONFIANZA ---------- */
+  .confianza{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+    background:var(--linea);border:1px solid var(--linea);border-radius:var(--radius);
+    overflow:hidden;margin-bottom:52px;
+  }
+  @media (max-width:720px){ .confianza{grid-template-columns:1fr;} }
+  .confianza div{background:var(--superficie);padding:16px 20px;}
+  .confianza p.label{font-size:12px;color:var(--ink-muted);margin:0 0 4px;text-transform:uppercase;letter-spacing:.04em;}
+  .confianza p.val{font-size:14px;margin:0;font-weight:500;}
+  .confianza .confianza-tiempos{grid-column:1 / -1;}
+  .tiempos-lista{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+  .tiempo-chip{
+    display:inline-flex;align-items:center;gap:6px;font-size:12.5px;
+    background:var(--papel);border:1px solid var(--linea);border-radius:20px;
+    padding:5px 12px;color:var(--ink);
+  }
+  .tiempo-chip strong{font-family:var(--font-mono);font-weight:600;color:var(--pqrs);}
+
+  /* ---------- FORMULARIOS ---------- */
+  .panel{
+    display:none;background:var(--superficie);border:1px solid var(--linea);
+    border-radius:var(--radius);padding:32px;margin-bottom:40px;
+    animation:abrir .25s ease;
+  }
+  .panel.is-visible{display:block;}
+  @keyframes abrir{ from{opacity:0; transform:translateY(-8px);} to{opacity:1; transform:translateY(0);} }
+
+  .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:16px;flex-wrap:wrap;}
+  .panel-head h2{font-family:var(--font-display);font-size:22px;margin:0;color:var(--azul-700);}
+  .volver{
+    background:none;border:none;font-size:14px;color:var(--ink-muted);cursor:pointer;
+    display:flex;align-items:center;gap:6px;font-family:var(--font-body);padding:6px 4px;
+  }
+  .volver:hover{color:var(--azul);}
+  .panel-desc{color:var(--ink-muted);font-size:14px;margin:0 0 26px;}
+
+  fieldset{border:none;padding:0;margin:0 0 26px;}
+  legend{font-family:var(--font-display);font-size:15px;font-weight:600;color:var(--ink);margin-bottom:12px;padding:0;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width:600px){ .grid2{grid-template-columns:1fr;} }
+
+  .campo{margin-bottom:16px;}
+  .campo label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px;}
+  .campo .hint{font-size:12px;color:var(--ink-muted);margin-top:4px;}
+  input, select, textarea{
+    width:100%;padding:10px 12px;border:1px solid var(--linea);border-radius:8px;
+    font-family:var(--font-body);font-size:14px;color:var(--ink);background:#fff;
+  }
+  input:focus, select:focus, textarea:focus{
+    outline:none;border-color:var(--azul);box-shadow:0 0 0 3px var(--azul-100);
+  }
+  textarea{resize:vertical;min-height:100px;}
+
+  .pastillas{display:flex;flex-wrap:wrap;gap:8px;}
+  .pastilla{position:relative;}
+  .pastilla input{position:absolute;opacity:0;width:1px;height:1px;}
+  .pastilla label{
+    display:inline-block;padding:9px 16px;border:1px solid var(--linea);border-radius:20px;
+    font-size:13px;font-weight:500;cursor:pointer;margin:0;color:var(--ink);
+  }
+  .pastilla input:checked + label{
+    border-color:currentColor;background:currentColor;color:#fff;
+  }
+  .panel.pqrs-tema{color:var(--pqrs);}
+  .panel.tramites-tema{color:var(--tramites);}
+
+  .requisitos{
+    background:var(--papel);border-radius:10px;padding:16px 18px;margin:4px 0 20px;
+  }
+  .requisitos p.tit{font-size:13px;font-weight:600;margin:0 0 8px;color:var(--ink);}
+  .requisitos ul{margin:0;padding-left:18px;font-size:13.5px;color:var(--ink-muted);}
+  .requisitos li{margin-bottom:4px;}
+
+  .registro-item{
+    background:var(--papel);border:1px solid var(--linea);border-radius:10px;
+    padding:16px 18px;margin-bottom:14px;position:relative;
+  }
+  .registro-item .registro-num{
+    font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--tramites);
+    text-transform:uppercase;letter-spacing:.04em;margin:0 0 10px;
+  }
+  .registro-eliminar{
+    background:none;border:none;color:var(--pqrs);font-size:12.5px;font-weight:600;
+    cursor:pointer;padding:0;font-family:var(--font-body);
+  }
+  .registro-eliminar:hover{text-decoration:underline;}
+
+  .file-drop{
+    border:1.5px dashed var(--linea);border-radius:10px;padding:20px;text-align:center;
+    font-size:13px;color:var(--ink-muted);
+  }
+  .file-drop input{border:none;padding:0;}
+
+  .autorizacion{
+    display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--ink-muted);
+    background:var(--papel);padding:14px 16px;border-radius:10px;margin-bottom:22px;
+  }
+  .autorizacion input{width:auto;margin-top:3px;}
+
+  /* ---------- MODAL DESCRIPCION DE TRAMITE ---------- */
+  .modal-fondo{
+    display:none;position:fixed;inset:0;background:rgba(14,42,69,.55);
+    align-items:center;justify-content:center;padding:20px;z-index:50;
+  }
+  .modal-fondo.is-visible{display:flex;}
+  .modal-caja{
+    background:#fff;border-radius:16px;max-width:520px;width:100%;
+    max-height:82vh;overflow-y:auto;padding:28px;position:relative;
+    animation:abrir .18s ease;
+  }
+  .modal-cerrar{
+    position:absolute;top:16px;right:16px;background:var(--papel);border:none;
+    width:32px;height:32px;border-radius:50%;cursor:pointer;color:var(--ink-muted);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .modal-cerrar:hover{color:var(--ink);}
+  .modal-caja .tag{
+    display:inline-block;font-family:var(--font-mono);font-size:11px;font-weight:600;
+    letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:20px;
+    background:var(--tramites-100);color:var(--tramites);margin-bottom:12px;
+  }
+  .modal-caja h3{font-family:var(--font-display);font-size:19px;margin:0 0 6px;padding-right:28px;color:var(--azul-700);}
+  .modal-caja .alias{font-size:13px;color:var(--ink-muted);font-style:italic;margin:0 0 16px;}
+  .modal-caja .descripcion{font-size:14.5px;line-height:1.7;color:var(--ink);margin:0 0 18px;}
+  .modal-caja .entidad{
+    font-size:12.5px;color:var(--ink-muted);border-top:1px solid var(--linea);padding-top:14px;
+  }
+
+  .btn-primario{
+    font-family:var(--font-body);font-weight:600;font-size:15px;color:#fff;
+    background:var(--ink);border:none;padding:13px 26px;border-radius:9px;cursor:pointer;
+  }
+  .panel.pqrs-tema .btn-primario{background:var(--pqrs);}
+  .panel.tramites-tema .btn-primario{background:var(--tramites);}
+  .btn-primario:hover{filter:brightness(1.08);}
+  .btn-primario:focus-visible{outline:3px solid var(--dorado); outline-offset:2px;}
+
+  .error-msg{color:#8A1F1F;font-size:12px;margin-top:5px;display:none;}
+
+  /* ---------- CONFIRMACION ---------- */
+  .confirmacion{display:none;text-align:center;padding:20px 10px 6px;}
+  .confirmacion.is-visible{display:block;}
+  .confirmacion .check{
+    width:56px;height:56px;border-radius:50%;background:var(--tramites-100);color:var(--tramites);
+    display:flex;align-items:center;justify-content:center;margin:0 auto 18px;
+  }
+  .confirmacion .check svg{width:26px;height:26px;}
+  .confirmacion h3{font-family:var(--font-display);font-size:20px;margin:0 0 8px;}
+  .confirmacion p{color:var(--ink-muted);font-size:14px;margin:0 auto 20px;max-width:44ch;}
+  .radicado{
+    display:inline-block;font-family:var(--font-mono);font-size:19px;font-weight:600;
+    background:var(--papel);border:1px dashed var(--linea);border-radius:10px;
+    padding:12px 22px;letter-spacing:.03em;color:var(--azul-700);margin-bottom:20px;
+  }
+  .btn-secundario{
+    font-family:var(--font-body);font-weight:600;font-size:14px;color:var(--ink);
+    background:#fff;border:1px solid var(--linea);padding:10px 20px;border-radius:9px;cursor:pointer;
+  }
+
+  /* ---------- PIE ---------- */
+  footer{background:var(--azul-700);color:#C7D6E3;}
+  .footer-in{max-width:1080px;margin:0 auto;padding:36px 24px;display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:28px;font-size:13.5px;}
+  @media (max-width:720px){ .footer-in{grid-template-columns:1fr;} }
+  .footer-in h4{color:#fff;font-family:var(--font-display);font-size:14px;font-weight:600;margin:0 0 10px;}
+  .footer-in p, .footer-in a{color:#B8CBDB;text-decoration:none;line-height:1.7;}
+  .footer-in a:hover{color:#fff;text-decoration:underline;}
+  .footer-bottom{
+    border-top:1px solid rgba(255,255,255,.12);text-align:center;padding:16px;font-size:12px;color:#8FAAC0;
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-bar">
+    <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V6l-8-4Z"/></svg> Sitio oficial de la entidad</span>
+    <span>Línea de atención: 01 8000 000 000</span>
+  </div>
+  <div class="brand-row">
+    <svg class="escudo" viewBox="0 0 52 52" fill="none">
+      <path d="M26 4 8 11v13c0 12 8 20.5 18 24 10-3.5 18-12 18-24V11L26 4Z" fill="#0E2A45" stroke="#C68A2E" stroke-width="1.5"/>
+      <path d="M17 25.5 23 31 35 19" stroke="#EEF2F5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div class="brand-text">
+      <p class="kicker">República de Colombia</p>
+      <h1>Portal de Atención al Ciudadano</h1>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <p class="eyebrow">// dos ventanillas, un solo lugar</p>
+    <h2>¿Qué necesitas hacer hoy?</h2>
+    <p>Radica una petición, queja, reclamo o sugerencia, o inicia un trámite. En los dos casos te entregamos un número de radicado para que sigas el estado de tu solicitud.</p>
+  </section>
+
+  <section class="ventanillas" aria-label="Selecciona qué necesitas hacer">
+    <button type="button" class="ventanilla radicar" id="btn-radicar" aria-expanded="false" aria-controls="panel-radicar">
+      <div class="arco">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 5h16v10H8l-4 4V5Z"/><path d="M8 9h8M8 12h5"/>
+        </svg>
+      </div>
+      <span class="tag">Ventanilla 1</span>
+      <h3>Radicar</h3>
+      <p class="sub">Radica una PQRS o inicia un trámite</p>
+      <span class="cta">Radicar una solicitud
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </span>
+    </button>
+
+    <button type="button" class="ventanilla consultar" id="btn-consultar" aria-expanded="false" aria-controls="panel-consultar">
+      <div class="arco">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="10.5" cy="10.5" r="6"/><path d="m20 20-4.35-4.35"/>
+        </svg>
+      </div>
+      <span class="tag">Ventanilla 2</span>
+      <h3>Consultar</h3>
+      <p class="sub">Revisa el estado de una PQRS o un trámite ya radicado</p>
+      <span class="cta">Consultar un radicado
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </span>
+    </button>
+  </section>
+
+  <section class="confianza" aria-label="Información de servicio">
+    <div class="confianza-tiempos">
+      <p class="label">Tiempo de respuesta PQRS</p>
+      <div class="tiempos-lista">
+        <span class="tiempo-chip">Peticiones <strong>15 días hábiles</strong></span>
+        <span class="tiempo-chip">Quejas <strong>15 días hábiles</strong></span>
+        <span class="tiempo-chip">Reclamos <strong>15 días hábiles</strong></span>
+        <span class="tiempo-chip">Sugerencias <strong>15 días hábiles</strong></span>
+        <span class="tiempo-chip">Denuncias <strong>15 días hábiles</strong></span>
+        <span class="tiempo-chip">Felicitaciones <strong>15 días hábiles</strong></span>
+        <span class="tiempo-chip">Solicitudes de acceso a la información <strong>10 días hábiles</strong></span>
+        <span class="tiempo-chip">Solicitud de copias <strong>10 días hábiles</strong></span>
+        <span class="tiempo-chip">Consultas <strong>30 días hábiles</strong></span>
+      </div>
+    </div>
+    <div>
+      <p class="label">Seguimiento</p>
+      <p class="val">Con el número de radicado, en línea o por teléfono</p>
+    </div>
+    <div>
+      <p class="label">Canales</p>
+      <p class="val">Portal web, puntos de atención y línea telefónica</p>
+    </div>
+  </section>
+
+  <!-- PANEL RADICAR (formulario único) -->
+  <section class="panel" id="panel-radicar" aria-labelledby="titulo-radicar">
+    <div class="panel-head">
+      <h2 id="titulo-radicar">Radicar una solicitud</h2>
+      <button type="button" class="volver" data-volver-principal="panel-radicar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+        Volver
+      </button>
+    </div>
+    <p class="panel-desc">Completa el formulario. Todos los campos marcados con * son obligatorios.</p>
+
+    <form id="form-radicar" novalidate>
+      <fieldset>
+        <legend>1. ¿Cómo te identificas?</legend>
+        <div class="campo" style="max-width:420px;">
+          <label for="rad-identidad">Selecciona una opción *</label>
+          <select id="rad-identidad" required>
+            <option value="">Selecciona</option>
+            <option value="anonimo">Anónimo</option>
+            <option value="ciudadano">Ciudadano</option>
+            <option value="persona-natural">Contribuyente y/o deudor persona natural</option>
+            <option value="persona-juridica">Contribuyente y/o deudor persona jurídica</option>
+            <option value="contratista">Contratista</option>
+            <option value="funcionario">Funcionario / exfuncionario</option>
+          </select>
+          <p class="hint">Si eliges Anónimo, no te pediremos documento ni nombre.</p>
+        </div>
+
+        <div class="grid2" id="rad-datos-contratista" style="display:none;">
+          <div class="campo">
+            <label for="rad-numcontrato">Número de contrato *</label>
+            <input type="text" id="rad-numcontrato" placeholder="Escribe el número de contrato">
+          </div>
+          <div class="campo">
+            <label for="rad-tipopersona">Tipo de persona *</label>
+            <select id="rad-tipopersona">
+              <option value="">Selecciona</option>
+              <option value="natural">Persona natural</option>
+              <option value="juridica">Persona jurídica</option>
+            </select>
+          </div>
+          <div class="campo" style="grid-column:1 / -1;">
+            <label for="rad-dependencia">Dependencia supervisora *</label>
+            <input type="text" id="rad-dependencia" placeholder="Escribe la dependencia que supervisa el contrato">
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset id="rad-registros-fieldset" style="display:none;">
+        <legend>1.1 Predios o vehículos asociados</legend>
+        <p class="panel-desc" style="margin:0 0 16px;">Registra el chip o la placa correspondiente. Puedes agregar varios si necesitas incluir más de un predio o vehículo.</p>
+        <div id="rad-registros-lista"></div>
+        <button type="button" class="volver" id="rad-agregar-registro" style="padding:0;color:var(--azul);font-weight:600;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          Agregar otro registro
+        </button>
+      </fieldset>
+
+      <fieldset>
+        <legend>2. Tipo de solicitud</legend>
+        <div class="pastillas" role="radiogroup" aria-label="Tipo de solicitud">
+          <div class="pastilla"><input type="radio" name="tipo-solicitud" id="tp-peticion" value="peticion" checked><label for="tp-peticion">Petición</label></div>
+          <div class="pastilla"><input type="radio" name="tipo-solicitud" id="tp-queja" value="queja"><label for="tp-queja">Queja</label></div>
+          <div class="pastilla"><input type="radio" name="tipo-solicitud" id="tp-reclamo" value="reclamo"><label for="tp-reclamo">Reclamo</label></div>
+          <div class="pastilla"><input type="radio" name="tipo-solicitud" id="tp-sugerencia" value="sugerencia"><label for="tp-sugerencia">Sugerencia</label></div>
+          <div class="pastilla"><input type="radio" name="tipo-solicitud" id="tp-denuncia" value="denuncia"><label for="tp-denuncia">Denuncia</label></div>
+          <div class="pastilla"><input type="radio" name="tipo-solicitud" id="tp-felicitacion" value="felicitacion"><label for="tp-felicitacion">Felicitación</label></div>
+          <div class="pastilla"><input type="radio" name="tipo-solicitud" id="tp-acceso-info" value="acceso-informacion"><label for="tp-acceso-info">Solicitud de acceso a la información</label></div>
+          <div class="pastilla"><input type="radio" name="tipo-solicitud" id="tp-copias" value="copias"><label for="tp-copias">Solicitud de copias</label></div>
+          <div class="pastilla"><input type="radio" name="tipo-solicitud" id="tp-consulta" value="consulta"><label for="tp-consulta">Consulta</label></div>
+          <div class="pastilla"><input type="radio" name="tipo-solicitud" id="tp-tramite" value="tramite"><label for="tp-tramite">Trámite</label></div>
+        </div>
+        <p class="hint" id="rad-tiempo-respuesta" style="margin-top:10px;"></p>
+      </fieldset>
+
+      <fieldset id="rad-tramite-fieldset" style="display:none;">
+        <legend>2.1 Selecciona el trámite</legend>
+        <div class="campo">
+          <label for="tr-tipo">Trámite *</label>
+          <select id="tr-tipo">
+            <option value="">Selecciona un trámite</option>
+            <option value="correccion-de-errores-e-inconsistencias-en-declaraciones-y-recibos-de-pago" data-perfil="general">Corrección de errores e inconsistencias en declaraciones y recibos de pago</option>
+            <option value="impuesto-al-consumo-de-cervezas-sifones-refajos-y-mezclas-nacionales" data-perfil="general">Impuesto al consumo de cervezas, sifones, refajos y mezclas nacionales</option>
+            <option value="impuesto-de-loterias-foraneas-y-sobre-premios-de-loteria" data-perfil="general">Impuesto de loterías foráneas y sobre premios de lotería</option>
+            <option value="participacion-en-plusvalia" data-perfil="general">Participación en plusvalía</option>
+            <option value="impuesto-al-consumo-de-cigarrillos-y-tabaco-elaborado-de-origen-extranjero" data-perfil="general">Impuesto al consumo de cigarrillos y tabaco elaborado de origen extranjero</option>
+            <option value="impuesto-al-consumo-de-cervezas-sifones-refajos-y-mezclas-de-origen-extranjero" data-perfil="general">Impuesto al consumo de cervezas, sifones, refajos y mezclas de origen extranjero</option>
+            <option value="legalizacion-de-las-tornaguias" data-perfil="general">Legalización de las tornaguías</option>
+            <option value="tornaguia-de-movilizacion" data-perfil="general">Tornaguía de movilización</option>
+            <option value="anulacion-de-las-tornaguias" data-perfil="general">Anulación de las tornaguías</option>
+            <option value="tornaguia-de-reenvios" data-perfil="general">Tornaguía de reenvíos</option>
+            <option value="tornaguia-de-transito" data-perfil="general">Tornaguía de tránsito</option>
+            <option value="devolucion-y-o-compensacion-de-pagos-en-exceso-y-pagos-de-lo-no-debido-por-conceptos-no-tributarios" data-perfil="general">Devolución y/o compensación de pagos en exceso y pagos de lo no debido por conceptos no tributarios</option>
+            <option value="facilidades-de-pago-para-los-deudores-de-obligaciones-tributarias" data-perfil="general">Facilidades de pago para los deudores de obligaciones tributarias</option>
+            <option value="facilidades-de-pago-para-los-deudores-de-obligaciones-no-tributarias" data-perfil="general">Facilidades de pago para los deudores de obligaciones no tributarias</option>
+            <option value="registro-de-los-sujetos-pasivos-o-responsables-del-impuesto-al-consumo" data-perfil="general">Registro de los sujetos pasivos o responsables del impuesto al consumo</option>
+            <option value="registro-de-contribuyentes-del-impuesto-de-industria-y-comercio" data-perfil="general">Registro de contribuyentes del impuesto de industria y comercio</option>
+            <option value="devolucion-y-o-compensacion-de-pagos-en-exceso-y-pagos-de-lo-no-debido" data-perfil="general">Devolución y/o compensación de pagos en exceso y pagos de lo no debido</option>
+            <option value="pago-contratista" data-perfil="contratista">Trámite pago contratista</option>
+            <option value="certificacion-laboral" data-perfil="funcionario">Certificación laboral</option>
+            <option value="certificacion-laboral-entidades-liquidadas-o-suprimidas" data-perfil="funcionario">Certificación laboral de entidades liquidadas o suprimidas</option>
+          </select>
+        </div>
+        <div class="requisitos" id="tr-resumen" style="display:none;">
+          <p class="tit" id="tr-resumen-titulo">&nbsp;</p>
+          <p class="hint" id="tr-resumen-alias" style="margin:0 0 8px;"></p>
+          <button type="button" class="volver" id="tr-ver-descripcion" style="padding:0;color:var(--tramites);font-weight:600;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+            Ver descripción del trámite
+          </button>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>3. Tus datos</legend>
+        <div class="grid2" id="rad-datos-personales">
+          <div class="campo">
+            <label for="rad-tipodoc">Tipo de documento *</label>
+            <select id="rad-tipodoc" required>
+              <option value="">Selecciona</option>
+              <option data-perfiles="persona-natural contratista funcionario ciudadano">Cédula de ciudadanía</option>
+              <option data-perfiles="persona-natural contratista funcionario ciudadano">Cédula de extranjería</option>
+              <option data-perfiles="persona-natural contratista funcionario ciudadano">Pasaporte</option>
+              <option data-perfiles="persona-juridica contratista">NIT</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="rad-numdoc">Número de documento *</label>
+            <input type="text" id="rad-numdoc" required inputmode="numeric" placeholder="1020304050">
+          </div>
+        </div>
+        <div class="grid2" id="rad-datos-personales-2">
+          <div class="campo">
+            <label for="rad-nombre" id="rad-nombre-label">Nombres y apellidos *</label>
+            <input type="text" id="rad-nombre" required placeholder="Nombre completo">
+          </div>
+          <div class="campo">
+            <label for="rad-correo">Correo electrónico *</label>
+            <input type="email" id="rad-correo" required placeholder="nombre@correo.com">
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="campo">
+            <label for="rad-telefono">Teléfono o celular *</label>
+            <input type="tel" id="rad-telefono" required placeholder="3001234567">
+          </div>
+          <div class="campo">
+            <label for="rad-medio">¿Cómo prefieres recibir la respuesta? *</label>
+            <select id="rad-medio" required>
+              <option value="">Selecciona</option>
+              <option>Correo electrónico</option>
+              <option>Aquí en el portal</option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset id="rad-pqrs-desc-fieldset">
+        <legend>4. Describe tu solicitud</legend>
+        <div class="campo">
+          <label for="rad-asunto">Asunto *</label>
+          <input type="text" id="rad-asunto" required placeholder="Resumen en pocas palabras">
+        </div>
+        <div class="campo">
+          <label for="rad-descripcion">Descripción detallada *</label>
+          <textarea id="rad-descripcion" required placeholder="Cuéntanos qué ocurrió, cuándo y dónde"></textarea>
+        </div>
+        <div class="campo">
+          <label for="rad-adjunto">Adjuntar soporte (opcional)</label>
+          <div class="file-drop">
+            <input type="file" id="rad-adjunto">
+            <div class="hint">PDF, JPG o PNG · máximo 10 MB</div>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset id="rad-tramite-docs-fieldset" style="display:none;">
+        <legend>4. Documentos y observaciones</legend>
+        <div class="campo">
+          <label for="rad-observaciones">Observaciones (opcional)</label>
+          <textarea id="rad-observaciones" placeholder="Algo más que debamos saber sobre tu solicitud"></textarea>
+        </div>
+        <div class="campo">
+          <label for="rad-adjunto-tramite">Adjuntar documentos requeridos *</label>
+          <div class="file-drop">
+            <input type="file" id="rad-adjunto-tramite" multiple>
+            <div class="hint">PDF, JPG o PNG · máximo 10 MB por archivo</div>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="autorizacion">
+        <input type="checkbox" id="rad-autorizacion" required>
+        <label for="rad-autorizacion">Autorizo el tratamiento de mis datos personales conforme a la política de privacidad y la Ley 1712 de 2014, para efectos de gestionar esta solicitud. *</label>
+      </div>
+
+      <button type="submit" class="btn-primario" id="rad-submit-btn">Radicar solicitud</button>
+      <p class="error-msg" id="rad-error">Revisa los campos marcados: hay información obligatoria sin completar.</p>
+    </form>
+
+    <div class="confirmacion" id="rad-confirmacion">
+      <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+      <h3 id="rad-confirmacion-titulo">Tu solicitud fue radicada</h3>
+      <p id="rad-confirmacion-texto">Guarda este número: lo necesitas para hacer seguimiento a tu solicitud en el portal o por la línea de atención.</p>
+      <div class="radicado" id="rad-radicado">PQRS-2026-000000</div>
+      <div><button type="button" class="btn-secundario" data-reiniciar="radicar">Radicar otra solicitud</button></div>
+    </div>
+  </section>
+
+
+  <!-- PANEL CONSULTAR -->
+  <section class="panel" id="panel-consultar" aria-labelledby="titulo-consultar">
+    <div class="panel-head">
+      <h2 id="titulo-consultar">Consultar el estado de una solicitud</h2>
+      <button type="button" class="volver" data-volver-principal="panel-consultar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+        Volver
+      </button>
+    </div>
+    <p class="panel-desc">Ingresa el número de radicado que te entregamos al finalizar tu PQRS o trámite.</p>
+
+    <form id="form-consultar" novalidate>
+      <div class="campo" style="max-width:360px;">
+        <label for="cons-radicado">Número de radicado *</label>
+        <input type="text" id="cons-radicado" required placeholder="Ej: PQRS-2026-084213 o TRM-2026-004921">
+        <p class="hint">Empieza con PQRS- si radicaste una PQRS, o TRM- si iniciaste un trámite.</p>
+      </div>
+      <button type="submit" class="btn-primario" style="background:var(--dorado-oscuro);">Consultar estado</button>
+      <p class="error-msg" id="cons-error">Escribe un número de radicado con el formato PQRS-AAAA-###### o TRM-AAAA-######.</p>
+    </form>
+
+    <div class="confirmacion" id="cons-resultado">
+      <div class="check" style="background:var(--dorado-100);color:var(--dorado-oscuro);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></div>
+      <h3 id="cons-titulo">Solicitud encontrada</h3>
+      <p id="cons-detalle">Esta es la información asociada a tu radicado.</p>
+      <div class="radicado" id="cons-radicado-mostrado">—</div>
+      <div><button type="button" class="btn-secundario" data-reiniciar="consultar">Consultar otro radicado</button></div>
+    </div>
+  </section>
+</main>
+
+<div class="modal-fondo" id="tr-modal" role="dialog" aria-modal="true" aria-labelledby="tr-modal-titulo">
+  <div class="modal-caja">
+    <button type="button" class="modal-cerrar" id="tr-modal-cerrar" aria-label="Cerrar descripción">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <span class="tag">Descripción del trámite</span>
+    <h3 id="tr-modal-titulo"></h3>
+    <p class="alias" id="tr-modal-alias"></p>
+    <p class="descripcion" id="tr-modal-descripcion"></p>
+    <p class="entidad" id="tr-modal-entidad"></p>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-in">
+    <div>
+      <h4>Portal de Atención al Ciudadano</h4>
+      <p>Entidad pública comprometida con la transparencia y la atención oportuna, en el marco de la Ley 1712 de 2014 sobre acceso a la información pública.</p>
+    </div>
+    <div>
+      <h4>Atención</h4>
+      <p>Lunes a viernes, 8:00 a.m. – 4:00 p.m.<br>Línea: 01 8000 000 000</p>
+    </div>
+    <div>
+      <h4>Enlaces</h4>
+      <p><a href="#">Política de tratamiento de datos</a><br><a href="#">Preguntas frecuentes</a><br><a href="#">Consultar radicado</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">Este es un diseño de referencia para el portal ciudadano.</div>
+</footer>
+
+<script>
+(function(){
+  // ---- Nivel 1: Radicar / Consultar ----
+  var botonesPrincipales = { radicar: document.getElementById('btn-radicar'), consultar: document.getElementById('btn-consultar') };
+  var panelesPrincipales = { radicar: document.getElementById('panel-radicar'), consultar: document.getElementById('panel-consultar') };
+
+  function abrirPanelPrincipal(clave){
+    Object.keys(panelesPrincipales).forEach(function(k){
+      panelesPrincipales[k].classList.toggle('is-visible', k === clave);
+      botonesPrincipales[k].classList.toggle('is-active', k === clave);
+      botonesPrincipales[k].setAttribute('aria-expanded', k === clave ? 'true' : 'false');
+    });
+    panelesPrincipales[clave].scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  botonesPrincipales.radicar.addEventListener('click', function(){ abrirPanelPrincipal('radicar'); });
+  botonesPrincipales.consultar.addEventListener('click', function(){ abrirPanelPrincipal('consultar'); });
+
+  document.querySelectorAll('[data-volver-principal]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var clave = btn.getAttribute('data-volver-principal').includes('radicar') ? 'radicar' : 'consultar';
+      panelesPrincipales[clave].classList.remove('is-visible');
+      botonesPrincipales[clave].classList.remove('is-active');
+      botonesPrincipales[clave].setAttribute('aria-expanded', 'false');
+      botonesPrincipales[clave].scrollIntoView({behavior:'smooth', block:'center'});
+    });
+  });
+
+  // ---- Datos de los trámites (SUIT) ----
+  var tramitesData = {
+    'correccion-de-errores-e-inconsistencias-en-declaraciones-y-recibos-de-pago': {
+      titulo: 'Corrección de errores e inconsistencias en declaraciones y recibos de pago',
+      alias: 'Saneamiento Tributario,Saneamiento de una declaración tributaria',
+      descripcion: 'Corrección de la información contenida en las declaraciones y/o en los recibos oficiales de pago, que presenten errores de diligenciamiento por parte del contribuyente, en datos tales como errores u omisiones en el concepto del tributo que se cancela, año y/o período gravable, errores de documento de identificación, errores aritméticos, siempre y cuando la inconsistencia no afecte el valor o liquidación del impuesto declarado',
+      entidad: 'Secretaria De Hacienda De Bogota'
+    },
+    'impuesto-al-consumo-de-cervezas-sifones-refajos-y-mezclas-nacionales': {
+      titulo: 'Impuesto al consumo de cervezas, sifones, refajos y mezclas nacionales',
+      alias: '',
+      descripcion: 'Declaración y pago que todo productor o importador de cervezas, sifones, refajos y mezclas debe realizar y solidariamente con ellos, los distribuidores de bebidas fermentadas con bebidas no alcohólicas. El impuesto se causa en el momento en que el productor entrega los productos nacionales en la fábrica o en planta para su distribución, venta o permuta, o para publicidad, promoción, donación, comisión o los destina al autoconsumo.',
+      entidad: 'Secretaria De Hacienda De Bogota'
+    },
+    'impuesto-de-loterias-foraneas-y-sobre-premios-de-loteria': {
+      titulo: 'Impuesto de loterías foráneas y sobre premios de lotería',
+      alias: 'Declaración y pago que deben realizar las empresas',
+      descripcion: 'Declaración y pago que deben realizar las empresas de lotería u operadores autorizados a favor de los departamentos y distritos por la venta de loterías foráneas y sobre los premios de lotería.',
+      entidad: 'Secretaria De Hacienda De Bogota'
+    },
+    'participacion-en-plusvalia': {
+      titulo: 'Participación en plusvalía',
+      alias: '',
+      descripcion: 'Pago que todo propietario de un inmueble debe hacer cuando se presente incremento del valor del suelo como consecuencia de acciones urbanísticas o ejecución de obras públicas, realizadas por la administración municipal o distrital y no por los propietarios del suelo.',
+      entidad: 'Secretaria De Hacienda De Bogota'
+    },
+    'impuesto-al-consumo-de-cigarrillos-y-tabaco-elaborado-de-origen-extranjero': {
+      titulo: 'Impuesto al consumo de cigarrillos y tabaco elaborado de origen extranjero',
+      alias: 'Distritalización de productos extranjeros',
+      descripcion: 'Declaración que están obligados a presentar los importadores o distribuidores de cigarrillos y tabaco elaborado por los productos extranjeros introducidos para distribución, venta, permuta, publicidad, donación o comisión y por los retiros para autoconsumo, en la respectiva entidad territorial.',
+      entidad: 'Secretaria De Hacienda De Bogota'
+    },
+    'impuesto-al-consumo-de-cervezas-sifones-refajos-y-mezclas-de-origen-extranjero': {
+      titulo: 'Impuesto al consumo de cervezas, sifones, refajos y mezclas de origen extranjero',
+      alias: '',
+      descripcion: 'Declaración que están obligados a presentar los importadores o distribuidores de cervezas, sifones, refajos y mezclas, por los productos extranjeros introducidos para distribución, venta, permuta, publicidad, donación o comisión y por los retiros para autoconsumo, en la respectiva entidad territorial.',
+      entidad: 'Secretaria De Hacienda De Bogota'
+    },
+    'legalizacion-de-las-tornaguias': {
+      titulo: 'Legalización de las tornaguías',
+      alias: '',
+      descripcion: 'Dar fe de que las mercancías amparadas con el certificado expedido han llegado a la entidad territorial de destino.',
+      entidad: 'Secretaria De Hacienda De Bogota'
+    },
+    'tornaguia-de-movilizacion': {
+      titulo: 'Tornaguía de movilización',
+      alias: '',
+      descripcion: 'Obtener la autorización para el transporte de mercancías gravadas con impuestos al consumo o que sean objeto del monopolio rentístico de licores, entre entidades territoriales que son sujetos activos de dichos impuestos. Estos productos deben estar destinados para consumo en la respectiva Entidad Territorial.',
+      entidad: 'Secretaria De Hacienda De Bogota'
+    },
+    'anulacion-de-las-tornaguias': {
+      titulo: 'Anulación de las tornaguías',
+      alias: '',
+      descripcion: 'Anular la expedición del certificado único de transporte de mercancías gravadas con el impuesto al consumo o que sean objeto de monopolio rentístico (tornaguías), cuando se ha dejado de movilizar los productos antes del vencimiento de su vigencia o en caso que los productos hayan sido hurtados.',
+      entidad: 'Secretaria De Hacienda De Bogota'
+    },
+    'tornaguia-de-reenvios': {
+      titulo: 'Tornaguía de reenvíos',
+      alias: '',
+      descripcion: 'Obtener la autorización para el transporte de mercancías gravadas con impuestos al consumo o que sean objeto del monopolio rentístico de licores, entre entidades territoriales que son sujetos activos de dichos impuestos cuando dichas mercancías habían sido declaradas para consumo en la entidad territorial de origen.',
+      entidad: 'Secretaria De Hacienda De Bogota'
+    },
+    'tornaguia-de-transito': {
+      titulo: 'Tornaguía de tránsito',
+      alias: '',
+      descripcion: 'Obtener la autorización para el transporte de mercancías gravadas con impuestos al consumo o que sean objeto del monopolio rentístico de licores al interior de la misma entidad territorial, en tránsito hacia otro país, entre aduanas o entre zonas francas, de conformidad con las disposiciones aduaneras pertinentes.',
+      entidad: 'Secretaria De Hacienda De Bogota'
+    },
+    'devolucion-y-o-compensacion-de-pagos-en-exceso-y-pagos-de-lo-no-debido-por-conceptos-no-tributarios': {
+      titulo: 'Devolución y/o compensación de pagos en exceso y pagos de lo no debido por conceptos no tributarios',
+      alias: '',
+      descripcion: 'Obtener la devolución y/o compensación de pagos en exceso o lo no debido, si ha cancelado sumas mayores por concepto de obligaciones no tributarias o ha efectuado pagos sin que exista causa legal para hacer exigible su cumplimiento.',
+      entidad: 'Secretaria De Hacienda De Bogota'
+    },
+    'facilidades-de-pago-para-los-deudores-de-obligaciones-tributarias': {
+      titulo: 'Facilidades de pago para los deudores de obligaciones tributarias',
+      alias: '',
+      descripcion: 'Obtener por el deudor o por un tercero a su nombre, facilidades para el pago de obligaciones tributarias.',
+      entidad: 'Secretaria De Hacienda De Bogota'
+    },
+    'facilidades-de-pago-para-los-deudores-de-obligaciones-no-tributarias': {
+      titulo: 'Facilidades de pago para los deudores de obligaciones no tributarias',
+      alias: '',
+      descripcion: 'Obtener por el deudor o por un tercero a su nombre, facilidades para el pago de las obligaciones no tributarias',
+      entidad: 'Secretaria De Hacienda De Bogota'
+    },
+    'registro-de-los-sujetos-pasivos-o-responsables-del-impuesto-al-consumo': {
+      titulo: 'Registro de los sujetos pasivos o responsables del impuesto al consumo',
+      alias: '',
+      descripcion: 'Inscripción de los productores, importadores y distribuidores responsables del impuesto al consumo que ejerzan o vayan a ejercer su actividad en la jurisdicción.',
+      entidad: 'Secretaria De Hacienda De Bogota'
+    },
+    'registro-de-contribuyentes-del-impuesto-de-industria-y-comercio': {
+      titulo: 'Registro de contribuyentes del impuesto de industria y comercio',
+      alias: '',
+      descripcion: 'Incorporarse al mecanismo de identificación, ubicación y clasificación de los contribuyentes del impuesto de industria y comercio.',
+      entidad: 'Secretaria De Hacienda De Bogota'
+    },
+    'devolucion-y-o-compensacion-de-pagos-en-exceso-y-pagos-de-lo-no-debido': {
+      titulo: 'Devolución y/o compensación de pagos en exceso y pagos de lo no debido',
+      alias: '',
+      descripcion: 'Obtener la devolución y/o compensación de pagos, si tiene pagos en exceso o lo no debido, es decir, si ha cancelado sumas mayores por concepto de obligaciones tributarias o ha efectuado pagos sin que exista causa legal para hacer exigible su cumplimiento.',
+      entidad: 'Secretaria De Hacienda De Bogota'
+    },
+    'pago-contratista': {
+      titulo: 'Trámite pago contratista',
+      alias: '',
+      descripcion: 'Descripción pendiente de completar por la entidad.',
+      entidad: 'Por definir'
+    },
+    'certificacion-laboral': {
+      titulo: 'Certificación laboral',
+      alias: '',
+      descripcion: 'Descripción pendiente de completar por la entidad.',
+      entidad: 'Por definir'
+    },
+    'certificacion-laboral-entidades-liquidadas-o-suprimidas': {
+      titulo: 'Certificación laboral de entidades liquidadas o suprimidas',
+      alias: '',
+      descripcion: 'Descripción pendiente de completar por la entidad.',
+      entidad: 'Por definir'
+    }
+  };
+
+  // ---- Tiempos de respuesta según tipo de solicitud ----
+  var tiemposRespuestaPQRS = {
+    'peticion': '15 días hábiles',
+    'queja': '15 días hábiles',
+    'reclamo': '15 días hábiles',
+    'sugerencia': '15 días hábiles',
+    'denuncia': '15 días hábiles',
+    'felicitacion': '15 días hábiles',
+    'acceso-informacion': '10 días hábiles',
+    'copias': '10 días hábiles',
+    'consulta': '30 días hábiles'
+  };
+  var textoTiempoRespuesta = document.getElementById('rad-tiempo-respuesta');
+  function actualizarTiempoRespuesta(valorSeleccionado){
+    var dias = tiemposRespuestaPQRS[valorSeleccionado];
+    textoTiempoRespuesta.textContent = dias ? 'Tiempo de respuesta estimado: ' + dias : '';
+  }
+
+  // ---- Identidad (Anónimo / Ciudadano / Persona natural / jurídica / Contratista / Funcionario) ----
+  var selectIdentidad = document.getElementById('rad-identidad');
+  var campoTipoDoc = document.getElementById('rad-tipodoc');
+  var bloqueDatosPersonales = document.getElementById('rad-datos-personales');
+  var bloqueDatosPersonales2 = document.getElementById('rad-datos-personales-2');
+  var camposPersonales = ['rad-tipodoc', 'rad-numdoc', 'rad-nombre'];
+  var bloqueContratista = document.getElementById('rad-datos-contratista');
+  var campoNumContrato = document.getElementById('rad-numcontrato');
+  var campoTipoPersona = document.getElementById('rad-tipopersona');
+  var campoDependencia = document.getElementById('rad-dependencia');
+
+  var fieldsetRegistros = document.getElementById('rad-registros-fieldset');
+  var listaRegistros = document.getElementById('rad-registros-lista');
+  var botonAgregarRegistro = document.getElementById('rad-agregar-registro');
+  var contadorRegistros = 0;
+
+  function crearFilaRegistro(){
+    contadorRegistros++;
+    var fila = document.createElement('div');
+    fila.className = 'registro-item';
+    fila.innerHTML =
+      '<p class="registro-num">Registro ' + contadorRegistros + '</p>' +
+      '<div class="grid2">' +
+        '<div class="campo">' +
+          '<label>Tipo *</label>' +
+          '<select class="reg-tipo" required>' +
+            '<option value="">Selecciona</option>' +
+            '<option value="chip">Chip catastral</option>' +
+            '<option value="placa">Placa</option>' +
+          '</select>' +
+        '</div>' +
+        '<div class="campo">' +
+          '<label>Número de chip o placa *</label>' +
+          '<input class="reg-numero" type="text" required placeholder="Escribe el chip o la placa">' +
+        '</div>' +
+      '</div>' +
+      '<div class="campo">' +
+        '<label>Número de proceso (opcional)</label>' +
+        '<input class="reg-proceso" type="text" placeholder="Si tienes un proceso asociado">' +
+      '</div>' +
+      '<button type="button" class="registro-eliminar">Eliminar este registro</button>';
+    listaRegistros.appendChild(fila);
+    fila.querySelector('.registro-eliminar').addEventListener('click', function(){
+      fila.remove();
+      renumerarRegistros();
+    });
+  }
+
+  function renumerarRegistros(){
+    var filas = listaRegistros.querySelectorAll('.registro-item');
+    filas.forEach(function(fila, i){
+      fila.querySelector('.registro-num').textContent = 'Registro ' + (i + 1);
+    });
+    if(filas.length === 0){ crearFilaRegistro(); }
+  }
+
+  botonAgregarRegistro.addEventListener('click', crearFilaRegistro);
+
+  function filtrarTipoDocumento(perfil){
+    var opciones = campoTipoDoc.querySelectorAll('option[data-perfiles]');
+    opciones.forEach(function(opt){
+      var perfiles = opt.getAttribute('data-perfiles').split(' ');
+      opt.hidden = perfiles.indexOf(perfil) === -1;
+    });
+    var actual = campoTipoDoc.selectedOptions[0];
+    if(actual && actual.hidden){
+      campoTipoDoc.value = '';
+    }
+    actualizarEtiquetaNombre();
+  }
+
+  var campoNombre = document.getElementById('rad-nombre');
+  var etiquetaNombre = document.getElementById('rad-nombre-label');
+  function actualizarEtiquetaNombre(){
+    var esNIT = campoTipoDoc.value === 'NIT';
+    etiquetaNombre.textContent = esNIT ? 'Razón social *' : 'Nombres y apellidos *';
+    campoNombre.placeholder = esNIT ? 'Razón social de la empresa' : 'Nombre completo';
+  }
+  campoTipoDoc.addEventListener('change', actualizarEtiquetaNombre);
+
+  // ---- Trámite: selección, resumen y modal de descripción ----
+  var selectTramite = document.getElementById('tr-tipo');
+  var cajaResumen = document.getElementById('tr-resumen');
+  var resumenTitulo = document.getElementById('tr-resumen-titulo');
+  var resumenAlias = document.getElementById('tr-resumen-alias');
+  var botonVerDescripcion = document.getElementById('tr-ver-descripcion');
+
+  var modal = document.getElementById('tr-modal');
+  var modalTitulo = document.getElementById('tr-modal-titulo');
+  var modalAlias = document.getElementById('tr-modal-alias');
+  var modalDescripcion = document.getElementById('tr-modal-descripcion');
+  var modalEntidad = document.getElementById('tr-modal-entidad');
+
+  function abrirModalTramite(val){
+    var t = tramitesData[val];
+    if(!t) return;
+    modalTitulo.textContent = t.titulo;
+    modalAlias.textContent = t.alias ? 'También se conoce como: ' + t.alias : '';
+    modalAlias.style.display = t.alias ? 'block' : 'none';
+    modalDescripcion.textContent = t.descripcion;
+    modalEntidad.textContent = 'Entidad responsable: ' + t.entidad;
+    modal.classList.add('is-visible');
+  }
+  function cerrarModalTramite(){
+    modal.classList.remove('is-visible');
+  }
+
+  selectTramite.addEventListener('change', function(){
+    var val = selectTramite.value;
+    if(!val){ cajaResumen.style.display = 'none'; return; }
+    var t = tramitesData[val];
+    resumenTitulo.textContent = t.titulo;
+    resumenAlias.textContent = t.alias ? 'También se conoce como: ' + t.alias : '';
+    cajaResumen.style.display = 'block';
+    abrirModalTramite(val);
+  });
+
+  botonVerDescripcion.addEventListener('click', function(){ abrirModalTramite(selectTramite.value); });
+  document.getElementById('tr-modal-cerrar').addEventListener('click', cerrarModalTramite);
+  modal.addEventListener('click', function(e){ if(e.target === modal) cerrarModalTramite(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') cerrarModalTramite(); });
+
+  function filtrarOpcionesTramite(perfil){
+    var perfilMostrar = (perfil === 'contratista' || perfil === 'funcionario') ? perfil : 'general';
+    var opciones = selectTramite.querySelectorAll('option[data-perfil]');
+    opciones.forEach(function(opt){
+      opt.hidden = (opt.getAttribute('data-perfil') !== perfilMostrar);
+    });
+    var actual = selectTramite.selectedOptions[0];
+    if(actual && actual.hidden){
+      selectTramite.value = '';
+      cajaResumen.style.display = 'none';
+      cerrarModalTramite();
+    }
+  }
+
+  selectIdentidad.addEventListener('change', function(){
+    var val = selectIdentidad.value;
+    var esAnonimo = val === 'anonimo';
+    var esContratista = val === 'contratista';
+    var necesitaRegistros = (val === 'persona-natural' || val === 'persona-juridica');
+
+    bloqueDatosPersonales.style.display = esAnonimo ? 'none' : 'grid';
+    bloqueDatosPersonales2.style.display = esAnonimo ? 'none' : 'grid';
+    camposPersonales.forEach(function(id){
+      document.getElementById(id).required = !esAnonimo;
+    });
+
+    bloqueContratista.style.display = esContratista ? 'grid' : 'none';
+    campoNumContrato.required = esContratista;
+    campoTipoPersona.required = esContratista;
+    campoDependencia.required = esContratista;
+
+    fieldsetRegistros.style.display = necesitaRegistros ? 'block' : 'none';
+    if(necesitaRegistros && listaRegistros.children.length === 0){
+      crearFilaRegistro();
+    }
+    listaRegistros.querySelectorAll('.reg-tipo, .reg-numero').forEach(function(campo){
+      campo.required = necesitaRegistros;
+    });
+
+    filtrarTipoDocumento(val);
+    filtrarOpcionesTramite(val);
+  });
+
+  filtrarTipoDocumento('');
+  filtrarOpcionesTramite('');
+
+  // ---- Tipo de solicitud: PQRS vs Trámite ----
+  var fieldsetTramite = document.getElementById('rad-tramite-fieldset');
+  var fieldsetDescPqrs = document.getElementById('rad-pqrs-desc-fieldset');
+  var fieldsetDocsTramite = document.getElementById('rad-tramite-docs-fieldset');
+  var campoAsunto = document.getElementById('rad-asunto');
+  var campoDescripcion = document.getElementById('rad-descripcion');
+  var campoAdjuntoTramite = document.getElementById('rad-adjunto-tramite');
+  var botonEnviar = document.getElementById('rad-submit-btn');
+
+  function actualizarTipoSolicitud(valor){
+    var esTramite = valor === 'tramite';
+
+    fieldsetTramite.style.display = esTramite ? 'block' : 'none';
+    selectTramite.required = esTramite;
+
+    fieldsetDescPqrs.style.display = esTramite ? 'none' : 'block';
+    campoAsunto.required = !esTramite;
+    campoDescripcion.required = !esTramite;
+
+    fieldsetDocsTramite.style.display = esTramite ? 'block' : 'none';
+    campoAdjuntoTramite.required = esTramite;
+
+    botonEnviar.textContent = esTramite ? 'Enviar solicitud de trámite' : 'Radicar solicitud';
+
+    if(esTramite){
+      textoTiempoRespuesta.textContent = '';
+    } else {
+      actualizarTiempoRespuesta(valor);
+    }
+  }
+
+  document.querySelectorAll('input[name="tipo-solicitud"]').forEach(function(radio){
+    radio.addEventListener('change', function(){ actualizarTipoSolicitud(radio.value); });
+  });
+  actualizarTipoSolicitud('peticion');
+
+  // ---- Envío del formulario unificado ----
+  function generarRadicado(prefijo){
+    var anio = new Date().getFullYear();
+    var num = Math.floor(100000 + Math.random() * 899999);
+    return prefijo + '-' + anio + '-' + num;
+  }
+
+  var formRadicar = document.getElementById('form-radicar');
+  var radError = document.getElementById('rad-error');
+  var radConfirmacion = document.getElementById('rad-confirmacion');
+  var radConfirmacionTitulo = document.getElementById('rad-confirmacion-titulo');
+  var radConfirmacionTexto = document.getElementById('rad-confirmacion-texto');
+  var radRadicado = document.getElementById('rad-radicado');
+
+  formRadicar.addEventListener('submit', function(e){
+    e.preventDefault();
+    if(!formRadicar.checkValidity()){
+      radError.style.display = 'block';
+      formRadicar.reportValidity();
+      return;
+    }
+    radError.style.display = 'none';
+    var esTramite = document.querySelector('input[name="tipo-solicitud"]:checked').value === 'tramite';
+    radConfirmacionTitulo.textContent = esTramite ? 'Tu trámite fue radicado' : 'Tu solicitud fue radicada';
+    radConfirmacionTexto.textContent = esTramite
+      ? 'Guarda este número: lo necesitas para hacer seguimiento a tu trámite en el portal o por la línea de atención.'
+      : 'Guarda este número: lo necesitas para hacer seguimiento a tu PQRS en el portal o por la línea de atención.';
+    radRadicado.textContent = generarRadicado(esTramite ? 'TRM' : 'PQRS');
+    formRadicar.style.display = 'none';
+    radConfirmacion.classList.add('is-visible');
+  });
+
+  // ---- Formulario de consulta de radicado ----
+  var formConsultar = document.getElementById('form-consultar');
+  var consError = document.getElementById('cons-error');
+  var consResultado = document.getElementById('cons-resultado');
+  var consTitulo = document.getElementById('cons-titulo');
+  var consDetalle = document.getElementById('cons-detalle');
+  var consRadicadoMostrado = document.getElementById('cons-radicado-mostrado');
+
+  formConsultar.addEventListener('submit', function(e){
+    e.preventDefault();
+    var valor = document.getElementById('cons-radicado').value.trim().toUpperCase();
+    var patron = /^(PQRS|TRM)-\d{4}-\d{5,6}$/;
+    if(!patron.test(valor)){
+      consError.style.display = 'block';
+      formConsultar.reportValidity();
+      return;
+    }
+    consError.style.display = 'none';
+    var esPQRS = valor.indexOf('PQRS') === 0;
+    consTitulo.textContent = esPQRS ? 'Tu PQRS está en trámite' : 'Tu trámite está en proceso';
+    consDetalle.textContent = esPQRS
+      ? 'Está siendo gestionada por la dependencia responsable dentro del tiempo de respuesta estipulado.'
+      : 'Está siendo revisado por la dependencia responsable dentro del tiempo de respuesta estipulado.';
+    consRadicadoMostrado.textContent = valor;
+    formConsultar.style.display = 'none';
+    consResultado.classList.add('is-visible');
+  });
+
+  // ---- Reiniciar formularios ----
+  document.querySelectorAll('[data-reiniciar]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var tipo = btn.getAttribute('data-reiniciar');
+      if(tipo === 'consultar'){
+        formConsultar.reset();
+        formConsultar.style.display = 'block';
+        consResultado.classList.remove('is-visible');
+        return;
+      }
+      if(tipo === 'radicar'){
+        formRadicar.reset();
+        formRadicar.style.display = 'block';
+        radConfirmacion.classList.remove('is-visible');
+        listaRegistros.innerHTML = '';
+        contadorRegistros = 0;
+        selectIdentidad.dispatchEvent(new Event('change'));
+        document.getElementById('tp-peticion').checked = true;
+        actualizarTipoSolicitud('peticion');
+        cajaResumen.style.display = 'none';
+      }
+    });
+  });
+})();
+
+</script>
+
+</body>
+</html>
